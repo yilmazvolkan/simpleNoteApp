@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewState"
+            type="com.yilmazvolkan.simplenoteapp.view.NoteItemViewState" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/relative_layout_note_item"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/dimen_8dp"
+        android:paddingEnd="@dimen/dimen_8dp"
+        android:paddingTop="@dimen/dimen_4dp"
+        android:paddingBottom="@dimen/dimen_4dp"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/text_view_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen_4dp"
+            android:singleLine="true"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="bold"
+            android:text="title"/>
+
+        <TextView
+            android:id="@+id/text_view_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen_4dp"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:text="desc"/>
+
+        <ImageView
+            android:id="@+id/image_view_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_edit_black_24dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_view_created_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_4dp"
+                android:textSize="@dimen/title_text_size"
+                android:textStyle="bold"
+                android:text="title"/>
+
+            <TextView
+                android:id="@+id/text_view_is_edited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_4dp"
+                android:textSize="@dimen/title_text_size"
+                android:textStyle="bold"
+                android:text="title"/>
+        </LinearLayout>
+    </LinearLayout>
+</layout>

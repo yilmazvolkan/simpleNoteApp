@@ -1,4 +1,4 @@
-package com.lyrebirdstudio.simplenoteapp
+package com.yilmazvolkan.simplenoteapp
 
 import org.junit.Test
 

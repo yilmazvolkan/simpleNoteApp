@@ -1,4 +1,4 @@
-package com.lyrebirdstudio.simplenoteapp
+package com.yilmazvolkan.simplenoteapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

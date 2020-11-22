@@ -41,6 +41,7 @@ class NoteListFragment : Fragment() {
         binding.recyclerViewEffects.adapter = noteListAdapter
 
         initializeViewModel()
+        initializeViewListeners()
         observeNoteListViewModel()
     }
 
@@ -53,8 +54,41 @@ class NoteListFragment : Fragment() {
         }
     }
 
+    private fun initializeViewListeners() {
+        binding.fabAddNote.setOnClickListener {
+
+        }
+
+        binding.buttonAdd.setOnClickListener {
+            if (isValid()){
+
+            }
+        }
+    }
+
     private fun observeNoteListViewModel() = with(noteListViewModel) {
         noteListAdapter.setEffectsDetailList(getEffectSelectedViewStates())
+    }
+
+    private fun isValid(): Boolean{
+        var isValid = true
+        if (binding.editTextTitle.text.toString().isEmpty()){
+            binding.inputLayoutTitle.isErrorEnabled = true
+            binding.inputLayoutTitle.error = "Tittle cannot be empty!"
+            isValid = false
+        }
+        else{
+            binding.inputLayoutTitle.isErrorEnabled = false
+        }
+        if (binding.editTextDesc.text.toString().isEmpty()){
+            binding.inputLayoutDesc.isErrorEnabled = true
+            binding.inputLayoutDesc.error = "Description cannot be empty!"
+            isValid = false
+        }
+        else{
+            binding.inputLayoutDesc.isErrorEnabled = false
+        }
+        return isValid
     }
 
     companion object {

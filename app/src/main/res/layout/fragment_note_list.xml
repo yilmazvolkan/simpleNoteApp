@@ -42,7 +42,20 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dimen_12dp"
             android:paddingBottom="@dimen/dimen_12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_note" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp"
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:layout_marginEnd="@dimen/dimen_4dp"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 </layout>

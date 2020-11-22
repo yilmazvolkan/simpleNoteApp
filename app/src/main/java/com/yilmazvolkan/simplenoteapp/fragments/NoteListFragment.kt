@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.yilmazvolkan.simplenoteapp.R
 import com.yilmazvolkan.simplenoteapp.adapters.NoteListAdapter
 import com.yilmazvolkan.simplenoteapp.databinding.FragmentNoteListBinding
+import com.yilmazvolkan.simplenoteapp.util.NoteListViewModelFactory
 import com.yilmazvolkan.simplenoteapp.util.inflate
 import com.yilmazvolkan.simplenoteapp.viewModels.NoteListViewModel
 
@@ -38,10 +40,26 @@ class NoteListFragment : Fragment() {
 
         binding.recyclerViewEffects.adapter = noteListAdapter
 
+        initializeViewModel()
         observeNoteListViewModel()
+    }
+
+    private fun initializeViewModel() {
+        activity?.let {
+            noteListViewModel = ViewModelProvider(
+                this,
+                NoteListViewModelFactory(it.application)
+            ).get(NoteListViewModel::class.java)
+        }
     }
 
     private fun observeNoteListViewModel() = with(noteListViewModel) {
         noteListAdapter.setEffectsDetailList(getEffectSelectedViewStates())
+    }
+
+    companion object {
+        fun newInstance(): NoteListFragment {
+            return NoteListFragment()
+        }
     }
 }

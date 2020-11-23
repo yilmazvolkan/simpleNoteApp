@@ -61,11 +61,12 @@ class NoteListFragment : Fragment() {
 
     private fun initializeViewListeners() {
         binding.imageViewBack.setOnClickListener {
-            noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false)
+            noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = false)
         }
 
         binding.fabAddNote.setOnClickListener {
-            noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = true)
+            clearTextViews()
+            noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = true, isItemClicked = false)
         }
 
         binding.buttonAdd.setOnClickListener {
@@ -85,8 +86,7 @@ class NoteListFragment : Fragment() {
                 noteListAdapter.notifyDataSetChanged()
 
                 clearFocus()
-                clearTextViews()
-                noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false)
+                noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = false)
             }
         }
         noteListAdapter.setItemClickListener(object : NoteListAdapter.OnItemClickListener {
@@ -94,7 +94,9 @@ class NoteListFragment : Fragment() {
                 if (selectedPosition == -1) {
                     return
                 }
-                //TODO open edit screen filled with data
+                fillTextViews(selectedPosition)
+                noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = true)
+
                 //noteListViewModel.getEffectSelectedViewStates()
                 noteListAdapter.notifyDataSetChanged()
             }
@@ -126,6 +128,17 @@ class NoteListFragment : Fragment() {
             binding.inputLayoutDesc.isErrorEnabled = false
         }
         return isValid
+    }
+
+    private fun fillTextViews(index: Int) {
+        val note = noteListViewModel.getEffectSelectedViewStates()[index]
+        binding.editTextTitle.setText(note.getTitle())
+        binding.editTextDesc.setText(note.getDesc())
+        binding.editTextUrl.setText(note.getImageURL())
+
+        binding.textViewTitle.text = note.getTitle()
+        binding.textViewDesc.text = note.getDesc()
+        binding.textViewUrl.text = note.getImageURL()
     }
 
     private fun clearTextViews() {

@@ -10,7 +10,7 @@ import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
 class NoteListViewModel(app: Application) : AndroidViewModel(app) {
 
     private val noteScreenViewStateLiveData =
-        MutableLiveData<NoteFragmentViewState>().apply { value = NoteFragmentViewState(isAddClicked = false) }
+        MutableLiveData<NoteFragmentViewState>().apply { value = NoteFragmentViewState(isAddClicked = false, isItemClicked = false) }
 
     private val myNotesList = arrayListOf<NoteItemViewState>(
         NoteItemViewState("1", "d", "", "date", false),
@@ -30,8 +30,8 @@ class NoteListViewModel(app: Application) : AndroidViewModel(app) {
     fun getNoteScreenViewStateLiveData(): LiveData<NoteFragmentViewState> =
         noteScreenViewStateLiveData
 
-    fun notifyNoteScreenViewStateLiveData(isAddClicked: Boolean) {
-        noteScreenViewStateLiveData.value = NoteFragmentViewState(isAddClicked = isAddClicked)
+    fun notifyNoteScreenViewStateLiveData(isAddClicked: Boolean, isItemClicked: Boolean) {
+        noteScreenViewStateLiveData.value = NoteFragmentViewState(isAddClicked = isAddClicked, isItemClicked = isItemClicked)
     }
 
 }

@@ -29,6 +29,9 @@ class NoteListFragment : Fragment() {
 
     private var selectedIndex = -1
 
+    private var saveButtonClicked: ((Int) -> Unit)? = null
+    private var openGalleryButtonClicked: (() -> Unit)? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,6 +87,7 @@ class NoteListFragment : Fragment() {
                 val c = Calendar.getInstance()
 
                 val noteItemViewState = NoteItemViewState(
+                    id = System.currentTimeMillis().toString(),
                     title = binding.editTextTitle.text.toString(),
                     desc = binding.editTextDesc.text.toString(),
                     imageURL = binding.editTextUrl.text.toString(),

@@ -3,15 +3,22 @@ package com.yilmazvolkan.simplenoteapp.view
 import android.view.View
 
 data class NoteItemViewState(
+    private var id: String = "",
     private var title: String = "",
     private var desc: String = "",
-    private var imageURL: String = "", //TODO
+    private var imageURL: String = "",
     private var date: String = "",
     private var isEdited: Boolean
 ) {
     fun getIsEditedTextViewVisibility() = when (isEdited) {
         true -> View.VISIBLE
         false -> View.GONE
+    }
+
+    fun getID() = id
+
+    fun setID(id: String) {
+        this.id = id
     }
 
     fun getTitle() = title

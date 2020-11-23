@@ -16,11 +16,11 @@ class NoteListViewModel(app: Application) : AndroidViewModel(app) {
         }
 
     private val myNotesList = arrayListOf<NoteItemViewState>(
-        NoteItemViewState("1", "d", "", "date", false),
-        NoteItemViewState("2", "d", "", "date", true),
-        NoteItemViewState("3", "d", "", "date", false),
-        NoteItemViewState("4", "d", "", "date", false),
-        NoteItemViewState("5", "d", "", "date", false),
+        NoteItemViewState("id1", "1", "d", "", "date", false),
+        NoteItemViewState("id2", "2", "d", "", "date", true),
+        NoteItemViewState("id3", "3", "d", "", "date", false),
+        NoteItemViewState("id4", "4", "d", "", "date", false),
+        NoteItemViewState("id5", "5", "d", "", "date", false),
     )
 
     fun getEffectSelectedViewStates(): ArrayList<NoteItemViewState> =

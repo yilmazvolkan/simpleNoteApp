@@ -76,11 +76,7 @@ class NoteListFragment : Fragment() {
                     title = binding.editTextTitle.text.toString(),
                     desc = binding.editTextDesc.text.toString(),
                     imageURL = binding.editTextUrl.text.toString(),
-                    date = "${c.get(Calendar.DAY_OF_MONTH)}/${c.get(Calendar.MONTH)}/${
-                        c.get(
-                            Calendar.YEAR
-                        )
-                    }",
+                    date = "${c.get(Calendar.DAY_OF_MONTH)}/${c.get(Calendar.MONTH)}/${c.get(Calendar.YEAR)}",
                     isEdited = false
                 )
 
@@ -88,14 +84,8 @@ class NoteListFragment : Fragment() {
                 noteListAdapter.addEffectsDetail(noteItemViewState)
                 noteListAdapter.notifyDataSetChanged()
 
-                val imm =
-                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view?.windowToken, 0)
-
-                binding.editTextTitle.setText("")
-                binding.editTextDesc.setText("")
-                binding.editTextUrl.setText("")
-
+                clearFocus()
+                clearTextViews()
                 noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false)
             }
         }
@@ -136,6 +126,18 @@ class NoteListFragment : Fragment() {
             binding.inputLayoutDesc.isErrorEnabled = false
         }
         return isValid
+    }
+
+    private fun clearTextViews() {
+        binding.editTextTitle.setText("")
+        binding.editTextDesc.setText("")
+        binding.editTextUrl.setText("")
+    }
+
+    private fun clearFocus() {
+        val imm =
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     companion object {

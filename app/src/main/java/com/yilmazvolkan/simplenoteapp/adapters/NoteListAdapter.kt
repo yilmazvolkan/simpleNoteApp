@@ -33,6 +33,14 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemView
         notifyItemRemoved(index)
     }
 
+    fun notifyItemUpdated(index: Int, viewState: NoteItemViewState){
+        this.effectsDetailList[index].setTitle(viewState.getTitle())
+        this.effectsDetailList[index].setDesc(viewState.getDesc())
+        this.effectsDetailList[index].setImageURL(viewState.getImageURL())
+        this.effectsDetailList[index].setIsEdited(viewState.getIsEdited())
+        notifyItemChanged(index)
+    }
+
     fun setItemClickListener(onItemClickListener: OnItemClickListener) {
         this.onItemClickListener = onItemClickListener
     }

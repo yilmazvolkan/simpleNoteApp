@@ -37,4 +37,10 @@ data class NoteItemViewState(
     fun setDate(date: String) {
         this.date = date
     }
+
+    fun getIsEdited() = isEdited
+
+    fun setIsEdited(isEdited: Boolean) {
+        this.isEdited = isEdited
+    }
 }

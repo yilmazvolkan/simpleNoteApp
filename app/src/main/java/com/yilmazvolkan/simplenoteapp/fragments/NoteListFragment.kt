@@ -63,12 +63,20 @@ class NoteListFragment : Fragment() {
 
     private fun initializeViewListeners() {
         binding.imageViewBack.setOnClickListener {
-            noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = false)
+            noteListViewModel.notifyNoteScreenViewStateLiveData(
+                isAddClicked = false,
+                isItemClicked = false,
+                isEdited = false
+            )
         }
 
         binding.fabAddNote.setOnClickListener {
             clearTextViews()
-            noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = true, isItemClicked = false)
+            noteListViewModel.notifyNoteScreenViewStateLiveData(
+                isAddClicked = true,
+                isItemClicked = false,
+                isEdited = false
+            )
         }
 
         binding.buttonAdd.setOnClickListener {
@@ -79,7 +87,11 @@ class NoteListFragment : Fragment() {
                     title = binding.editTextTitle.text.toString(),
                     desc = binding.editTextDesc.text.toString(),
                     imageURL = binding.editTextUrl.text.toString(),
-                    date = "${c.get(Calendar.DAY_OF_MONTH)}/${c.get(Calendar.MONTH)}/${c.get(Calendar.YEAR)}",
+                    date = "${c.get(Calendar.DAY_OF_MONTH)}/${c.get(Calendar.MONTH)}/${
+                        c.get(
+                            Calendar.YEAR
+                        )
+                    }",
                     isEdited = false
                 )
 
@@ -87,22 +99,57 @@ class NoteListFragment : Fragment() {
                 noteListAdapter.addEffectsDetail(noteItemViewState)
 
                 clearFocus()
-                noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = false)
+                noteListViewModel.notifyNoteScreenViewStateLiveData(
+                    isAddClicked = false,
+                    isItemClicked = false,
+                    isEdited = false
+                )
             }
         }
         binding.buttonEdit.setOnClickListener {
-            if (selectedIndex >= 0){
+            if (selectedIndex >= 0) {
+                fillTextViews(selectedIndex)
+                noteListViewModel.notifyNoteScreenViewStateLiveData(
+                    isAddClicked = false,
+                    isItemClicked = false,
+                    isEdited = true
+                )
+            }
+        }
 
+        binding.buttonSave.setOnClickListener {
+            if (isValid()) {
+
+                val note = noteListViewModel.getEffectSelectedViewStates()[selectedIndex]
+
+                note.setTitle(binding.editTextTitle.text.toString())
+                note.setDesc(binding.editTextDesc.text.toString())
+                note.setImageURL(binding.editTextUrl.text.toString())
+                note.setIsEdited(true)
+
+                noteListViewModel.notifyItemUpdated(selectedIndex, note)
+                noteListAdapter.notifyItemUpdated(selectedIndex, note)
+
+                clearFocus()
+                noteListViewModel.notifyNoteScreenViewStateLiveData(
+                    isAddClicked = false,
+                    isItemClicked = false,
+                    isEdited = false
+                )
             }
         }
 
         binding.buttonDelete.setOnClickListener {
-            if (selectedIndex >= 0){
+            if (selectedIndex >= 0) {
                 noteListViewModel.getEffectSelectedViewStates().removeAt(selectedIndex)
                 noteListViewModel.removeEffectSelectedViewState(selectedIndex)
 
                 noteListAdapter.deleteEffectsDetail(selectedIndex)
-                noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = false)
+                noteListViewModel.notifyNoteScreenViewStateLiveData(
+                    isAddClicked = false,
+                    isItemClicked = false,
+                    isEdited = false
+                )
             }
         }
 
@@ -113,10 +160,14 @@ class NoteListFragment : Fragment() {
                 }
                 selectedIndex = selectedPosition
                 fillTextViews(selectedPosition)
-                noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = true)
+                noteListViewModel.notifyNoteScreenViewStateLiveData(
+                    isAddClicked = false,
+                    isItemClicked = true,
+                    isEdited = false
+                )
 
                 //noteListViewModel.getEffectSelectedViewStates()
-               // noteListAdapter.notifyDataSetChanged()
+                // noteListAdapter.notifyDataSetChanged()
             }
         })
     }

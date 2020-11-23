@@ -28,6 +28,11 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemView
         notifyDataSetChanged()
     }
 
+    fun deleteEffectsDetail(index: Int) {
+        this.effectsDetailList.removeAt(index)
+        notifyItemRemoved(index)
+    }
+
     fun setItemClickListener(onItemClickListener: OnItemClickListener) {
         this.onItemClickListener = onItemClickListener
     }

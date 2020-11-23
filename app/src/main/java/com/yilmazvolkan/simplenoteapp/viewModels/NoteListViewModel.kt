@@ -27,6 +27,10 @@ class NoteListViewModel(app: Application) : AndroidViewModel(app) {
         myNotesList.add(noteItemViewState)
     }
 
+    fun removeEffectSelectedViewState(index: Int){
+        myNotesList.removeAt(index)
+    }
+
     fun getNoteScreenViewStateLiveData(): LiveData<NoteFragmentViewState> =
         noteScreenViewStateLiveData
 

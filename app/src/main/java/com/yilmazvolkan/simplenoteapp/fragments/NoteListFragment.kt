@@ -27,6 +27,8 @@ class NoteListFragment : Fragment() {
 
     private val noteListAdapter = NoteListAdapter()
 
+    private var selectedIndex = -1
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -83,22 +85,38 @@ class NoteListFragment : Fragment() {
 
                 noteListViewModel.addEffectSelectedViewState(noteItemViewState) //todo save to locale
                 noteListAdapter.addEffectsDetail(noteItemViewState)
-                noteListAdapter.notifyDataSetChanged()
 
                 clearFocus()
                 noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = false)
             }
         }
+        binding.buttonEdit.setOnClickListener {
+            if (selectedIndex >= 0){
+
+            }
+        }
+
+        binding.buttonDelete.setOnClickListener {
+            if (selectedIndex >= 0){
+                noteListViewModel.getEffectSelectedViewStates().removeAt(selectedIndex)
+                noteListViewModel.removeEffectSelectedViewState(selectedIndex)
+
+                noteListAdapter.deleteEffectsDetail(selectedIndex)
+                noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = false)
+            }
+        }
+
         noteListAdapter.setItemClickListener(object : NoteListAdapter.OnItemClickListener {
             override fun onItemClicked(selectedPosition: Int) {
                 if (selectedPosition == -1) {
                     return
                 }
+                selectedIndex = selectedPosition
                 fillTextViews(selectedPosition)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false, isItemClicked = true)
 
                 //noteListViewModel.getEffectSelectedViewStates()
-                noteListAdapter.notifyDataSetChanged()
+               // noteListAdapter.notifyDataSetChanged()
             }
         })
     }

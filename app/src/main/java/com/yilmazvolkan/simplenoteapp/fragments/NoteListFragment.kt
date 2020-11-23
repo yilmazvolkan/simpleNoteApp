@@ -1,13 +1,11 @@
 package com.yilmazvolkan.simplenoteapp.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -72,7 +70,6 @@ class NoteListFragment : Fragment() {
 
         binding.buttonAdd.setOnClickListener {
             if (isValid()) {
-                //TODO add here update NoteFragmentViewState
                 val c = Calendar.getInstance()
 
                 val noteItemViewState = NoteItemViewState(
@@ -91,8 +88,13 @@ class NoteListFragment : Fragment() {
                 noteListAdapter.addEffectsDetail(noteItemViewState)
                 noteListAdapter.notifyDataSetChanged()
 
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view?.windowToken, 0)
+
+                binding.editTextTitle.setText("")
+                binding.editTextDesc.setText("")
+                binding.editTextUrl.setText("")
 
                 noteListViewModel.notifyNoteScreenViewStateLiveData(isAddClicked = false)
             }

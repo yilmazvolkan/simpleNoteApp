@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.yilmazvolkan.simplenoteapp.database.NotesDBHelper
 import com.yilmazvolkan.simplenoteapp.databinding.ActivityMainBinding
 import com.yilmazvolkan.simplenoteapp.fragments.NoteListFragment
 

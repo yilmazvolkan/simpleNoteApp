@@ -33,7 +33,7 @@ class NoteListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return binding.root
     }
 
@@ -84,6 +84,7 @@ class NoteListFragment : Fragment() {
                 val c = Calendar.getInstance()
 
                 val noteItemViewState = NoteItemViewState(
+                    id = System.currentTimeMillis().toString(),
                     title = binding.editTextTitle.text.toString(),
                     desc = binding.editTextDesc.text.toString(),
                     imageURL = binding.editTextUrl.text.toString(),
@@ -95,7 +96,7 @@ class NoteListFragment : Fragment() {
                     isEdited = false
                 )
 
-                noteListViewModel.addEffectSelectedViewState(noteItemViewState) //todo save to locale
+                noteListViewModel.addEffectSelectedViewState(noteItemViewState)
                 noteListAdapter.addEffectsDetail(noteItemViewState)
 
                 clearFocus()
@@ -127,7 +128,7 @@ class NoteListFragment : Fragment() {
                 note.setImageURL(binding.editTextUrl.text.toString())
                 note.setIsEdited(true)
 
-                noteListViewModel.notifyItemUpdated(selectedIndex, note)
+                noteListViewModel.notifyItemUpdated(note)
                 noteListAdapter.notifyItemUpdated(selectedIndex, note)
 
                 clearFocus()
@@ -141,8 +142,9 @@ class NoteListFragment : Fragment() {
 
         binding.buttonDelete.setOnClickListener {
             if (selectedIndex >= 0) {
+                val id = noteListViewModel.getEffectSelectedViewStates()[selectedIndex].getID()
                 noteListViewModel.getEffectSelectedViewStates().removeAt(selectedIndex)
-                noteListViewModel.removeEffectSelectedViewState(selectedIndex)
+                noteListViewModel.removeEffectSelectedViewState(id)
 
                 noteListAdapter.deleteEffectsDetail(selectedIndex)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(

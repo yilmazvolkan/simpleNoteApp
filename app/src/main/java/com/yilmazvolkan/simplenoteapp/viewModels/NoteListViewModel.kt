@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.yilmazvolkan.simplenoteapp.database.NotesDBHelper
 import com.yilmazvolkan.simplenoteapp.view.NoteFragmentViewState
 import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
 
@@ -15,30 +16,25 @@ class NoteListViewModel(app: Application) : AndroidViewModel(app) {
                 NoteFragmentViewState(isAddClicked = false, isItemClicked = false, isEdited = false)
         }
 
-    private val myNotesList = arrayListOf<NoteItemViewState>(
-        NoteItemViewState("1", "d", "", "date", false),
-        NoteItemViewState("2", "d", "", "date", true),
-        NoteItemViewState("3", "d", "", "date", false),
-        NoteItemViewState("4", "d", "", "date", false),
-        NoteItemViewState("5", "d", "", "date", false),
-    )
+    private val myNotesList = arrayListOf<NoteItemViewState>()
 
-    fun getEffectSelectedViewStates(): ArrayList<NoteItemViewState> =
-        myNotesList
+    private var notesDBHelper = NotesDBHelper(app)
+
+
+    fun getEffectSelectedViewStates(): ArrayList<NoteItemViewState> {
+        return notesDBHelper.readAllUsers()
+    }
 
     fun addEffectSelectedViewState(noteItemViewState: NoteItemViewState) {
-        myNotesList.add(noteItemViewState)
+        notesDBHelper.insertNote(noteItemViewState)
     }
 
-    fun notifyItemUpdated(index: Int, viewState: NoteItemViewState){
-        myNotesList[index].setTitle(viewState.getTitle())
-        myNotesList[index].setDesc(viewState.getDesc())
-        myNotesList[index].setImageURL(viewState.getImageURL())
-        myNotesList[index].setIsEdited(viewState.getIsEdited())
+    fun notifyItemUpdated(viewState: NoteItemViewState){
+        notesDBHelper.updateNote(viewState)
     }
 
-    fun removeEffectSelectedViewState(index: Int) {
-        myNotesList.removeAt(index)
+    fun removeEffectSelectedViewState(id: String) {
+        notesDBHelper.deleteNote(id)
     }
 
     fun getNoteScreenViewStateLiveData(): LiveData<NoteFragmentViewState> =

@@ -3,7 +3,6 @@ package com.yilmazvolkan.simplenoteapp.database
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -46,7 +45,6 @@ class NotesDBHelper(context: Context) :
         return true
     }
 
-    @Throws(SQLiteConstraintException::class)
     fun deleteNote(id: String): Boolean {
         // Gets the data repository in write mode
         val db = writableDatabase
@@ -59,7 +57,6 @@ class NotesDBHelper(context: Context) :
         return true
     }
 
-    @Throws(SQLiteConstraintException::class)
     fun insertNote(note: NoteItemViewState): Boolean {
         // Gets the data repository in write mode
         val db = writableDatabase
@@ -116,7 +113,7 @@ class NotesDBHelper(context: Context) :
         const val DATABASE_VERSION = 1
         const val DATABASE_NAME = "SimpleNoteApplication.db"
 
-        private val SQL_CREATE_ENTRIES =
+        private const val SQL_CREATE_ENTRIES =
             "CREATE TABLE " + DBContract.NoteEntry.TABLE_NAME + " (" +
                     DBContract.NoteEntry.COLUMN_NOTE_ID + " TEXT PRIMARY KEY," +
                     DBContract.NoteEntry.COLUMN_TITLE + " TEXT NOT NULL," +
@@ -125,7 +122,8 @@ class NotesDBHelper(context: Context) :
                     DBContract.NoteEntry.COLUMN_CREATED_DATE + " TEXT NOT NULL," +
                     DBContract.NoteEntry.COLUMN_IS_EDITED + " INTEGER DEFAULT 0)"
 
-        private val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DBContract.NoteEntry.TABLE_NAME
+        private const val SQL_DELETE_ENTRIES =
+            "DROP TABLE IF EXISTS " + DBContract.NoteEntry.TABLE_NAME
     }
 
 }

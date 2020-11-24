@@ -1,14 +1,18 @@
 package com.yilmazvolkan.simplenoteapp.adapters
 
+import android.content.Context
 import android.util.Log
+import android.util.Patterns
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.yilmazvolkan.simplenoteapp.R
 import com.yilmazvolkan.simplenoteapp.databinding.ItemNoteBinding
 import com.yilmazvolkan.simplenoteapp.util.inflate
 import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
 
-class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemViewHolder>() {
+
+class NoteListAdapter(val context: Context) : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemViewHolder>() {
 
     interface OnItemClickListener {
         fun onItemClicked(selectedPosition: Int)
@@ -33,7 +37,7 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemView
         notifyItemRemoved(index)
     }
 
-    fun notifyItemUpdated(index: Int, viewState: NoteItemViewState){
+    fun notifyItemUpdated(index: Int, viewState: NoteItemViewState) {
         this.effectsDetailList[index].setTitle(viewState.getTitle())
         this.effectsDetailList[index].setDesc(viewState.getDesc())
         this.effectsDetailList[index].setImageURL(viewState.getImageURL())
@@ -54,7 +58,7 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemView
     override fun getItemCount(): Int = effectsDetailList.size
 
     override fun onBindViewHolder(viewHolder: NotesDetailItemViewHolder, position: Int) =
-        viewHolder.bind(effectsDetailList[position])
+        viewHolder.bind(effectsDetailList[position], context)
 
 
     class NotesDetailItemViewHolder(
@@ -70,8 +74,14 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemView
             }
         }
 
-        fun bind(effectsDetailList: NoteItemViewState) {
-            binding.viewState = effectsDetailList
+        fun bind(noteItem: NoteItemViewState, context: Context) {
+            if (noteItem.getImageURL().isNotEmpty()) {
+                Glide.with(context)
+                    .load(noteItem.getImageURL())
+                    .into(binding.imageViewPhoto)
+            }
+
+            binding.viewState = noteItem
             binding.executePendingBindings()
         }
 

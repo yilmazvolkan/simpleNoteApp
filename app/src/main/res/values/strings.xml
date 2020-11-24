@@ -12,4 +12,10 @@
     <string name="description">Description</string>
     <string name="image_url">Image Url</string>
 
+    <string name="permission_denied_header">Permission Denied</string>
+    <string name="permission_denied_text">Permission is denied, Please allow permissions from App Settings in order to access the Internet.</string>
+    <string name="permission_denied_app_settings">App Settings</string>
+
+    <string name="cancel">Cancel</string>
+
 </resources>

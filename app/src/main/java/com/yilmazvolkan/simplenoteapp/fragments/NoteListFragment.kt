@@ -30,7 +30,7 @@ class NoteListFragment : Fragment() {
 
     private lateinit var noteListViewModel: NoteListViewModel
 
-    private val noteListAdapter = NoteListAdapter()
+    private var noteListAdapter : NoteListAdapter? = null
 
     private var selectedIndex = -1
 
@@ -55,6 +55,8 @@ class NoteListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        noteListAdapter = NoteListAdapter(requireActivity())
 
         (binding.recyclerViewEffects.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false
@@ -150,7 +152,7 @@ class NoteListFragment : Fragment() {
                 )
 
                 noteListViewModel.addEffectSelectedViewState(noteItemViewState)
-                noteListAdapter.addEffectsDetail(noteItemViewState)
+                noteListAdapter?.addEffectsDetail(noteItemViewState)
 
                 clearFocus()
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
@@ -189,7 +191,7 @@ class NoteListFragment : Fragment() {
                             note.setIsEdited(true)
 
                             noteListViewModel.notifyItemUpdated(note)
-                            noteListAdapter.notifyItemUpdated(selectedIndex, note)
+                            noteListAdapter?.notifyItemUpdated(selectedIndex, note)
                         }, { /*error*/ })
                 )
 
@@ -216,7 +218,7 @@ class NoteListFragment : Fragment() {
                         }, { /*error*/ })
                 )
 
-                noteListAdapter.deleteEffectsDetail(selectedIndex)
+                noteListAdapter?.deleteEffectsDetail(selectedIndex)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
                     isAddClicked = false,
                     isItemClicked = false,
@@ -225,7 +227,7 @@ class NoteListFragment : Fragment() {
             }
         }
 
-        noteListAdapter.setItemClickListener(object : NoteListAdapter.OnItemClickListener {
+        noteListAdapter?.setItemClickListener(object : NoteListAdapter.OnItemClickListener {
             override fun onItemClicked(selectedPosition: Int) {
                 if (selectedPosition == -1) {
                     return
@@ -252,7 +254,7 @@ class NoteListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    noteListAdapter.setEffectsDetailList(it)
+                    noteListAdapter?.setEffectsDetailList(it)
                 }, { /*error*/ })
         )
     }

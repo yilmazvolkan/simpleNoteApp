@@ -11,6 +11,9 @@ data class NoteFragmentViewState(
     fun getListStateVisibility() =
         if (isAddClicked) View.GONE else if (isItemClicked) View.GONE else if (isEdited) View.GONE else View.VISIBLE
 
+    fun getListNotStateVisibility() =
+        if (isAddClicked) View.VISIBLE else if (isItemClicked) View.VISIBLE else if (isEdited) View.VISIBLE else View.GONE
+
     // When item is clicked
     fun getShowStateVisibility() =
         if (isAddClicked) View.GONE else if (isItemClicked) View.VISIBLE else if (isEdited) View.GONE else View.GONE

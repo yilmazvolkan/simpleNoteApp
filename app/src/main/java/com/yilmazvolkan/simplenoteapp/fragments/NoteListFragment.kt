@@ -2,10 +2,12 @@ package com.yilmazvolkan.simplenoteapp.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -16,6 +18,9 @@ import com.yilmazvolkan.simplenoteapp.util.NoteListViewModelFactory
 import com.yilmazvolkan.simplenoteapp.util.inflate
 import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
 import com.yilmazvolkan.simplenoteapp.viewModels.NoteListViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 
 
@@ -25,9 +30,20 @@ class NoteListFragment : Fragment() {
 
     private lateinit var noteListViewModel: NoteListViewModel
 
-    private val noteListAdapter = NoteListAdapter()
+    private var noteListAdapter : NoteListAdapter? = null
 
     private var selectedIndex = -1
+
+    private var onBackButtonClicked: (() -> Unit)? = null
+
+    private var isItemClicked = false
+    private var isEditClicked = false
+
+    private var compositeDisposable = CompositeDisposable()
+
+    fun setOnBackButtonClicked(onBackButtonClicked: (() -> Unit)?) {
+        this.onBackButtonClicked = onBackButtonClicked
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +56,8 @@ class NoteListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        noteListAdapter = NoteListAdapter(requireActivity())
+
         (binding.recyclerViewEffects.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
             false
 
@@ -47,9 +65,38 @@ class NoteListFragment : Fragment() {
 
         binding.recyclerViewEffects.adapter = noteListAdapter
 
+        binding.textViewTitle.movementMethod = ScrollingMovementMethod()
+        binding.textViewDesc.movementMethod = ScrollingMovementMethod()
+        binding.textViewUrl.movementMethod = ScrollingMovementMethod()
+        binding.editTextDesc.movementMethod = ScrollingMovementMethod()
+
         initializeViewModel()
         initializeViewListeners()
         observeNoteListViewModel()
+
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+            true // default to enabled
+        ) {
+            override fun handleOnBackPressed() {
+                when {
+                    isEditClicked -> {
+                        isEditClicked = false
+                        editBackPressedHelper()
+                    }
+                    isItemClicked -> {
+                        isItemClicked = false
+                        addBackPressedHelper()
+                    }
+                    else -> {
+                        onBackButtonClicked?.invoke()
+                    }
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner, // LifecycleOwner
+            callback
+        )
     }
 
     private fun initializeViewModel() {
@@ -63,14 +110,22 @@ class NoteListFragment : Fragment() {
 
     private fun initializeViewListeners() {
         binding.imageViewBack.setOnClickListener {
-            noteListViewModel.notifyNoteScreenViewStateLiveData(
-                isAddClicked = false,
-                isItemClicked = false,
-                isEdited = false
-            )
+            when {
+                isEditClicked -> {
+                    isEditClicked = false
+                    editBackPressedHelper()
+                }
+                isItemClicked -> {
+                    isItemClicked = false
+                    addBackPressedHelper()
+                }
+                else -> {
+                    onBackButtonClicked?.invoke()
+                }
+            }
         }
 
-        binding.fabAddNote.setOnClickListener {
+        binding.imageViewAddNote.setOnClickListener {
             clearTextViews()
             noteListViewModel.notifyNoteScreenViewStateLiveData(
                 isAddClicked = true,
@@ -97,7 +152,7 @@ class NoteListFragment : Fragment() {
                 )
 
                 noteListViewModel.addEffectSelectedViewState(noteItemViewState)
-                noteListAdapter.addEffectsDetail(noteItemViewState)
+                noteListAdapter?.addEffectsDetail(noteItemViewState)
 
                 clearFocus()
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
@@ -109,6 +164,7 @@ class NoteListFragment : Fragment() {
         }
         binding.buttonEdit.setOnClickListener {
             if (selectedIndex >= 0) {
+                isEditClicked = true
                 fillTextViews(selectedIndex)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
                     isAddClicked = false,
@@ -120,16 +176,24 @@ class NoteListFragment : Fragment() {
 
         binding.buttonSave.setOnClickListener {
             if (isValid()) {
+                isEditClicked = false
 
-                val note = noteListViewModel.getEffectSelectedViewStates()[selectedIndex]
+                compositeDisposable.add(
+                    noteListViewModel.getNoteItemSelectedViewStates()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            val note = it[selectedIndex]
 
-                note.setTitle(binding.editTextTitle.text.toString())
-                note.setDesc(binding.editTextDesc.text.toString())
-                note.setImageURL(binding.editTextUrl.text.toString())
-                note.setIsEdited(true)
+                            note.setTitle(binding.editTextTitle.text.toString())
+                            note.setDesc(binding.editTextDesc.text.toString())
+                            note.setImageURL(binding.editTextUrl.text.toString())
+                            note.setIsEdited(true)
 
-                noteListViewModel.notifyItemUpdated(note)
-                noteListAdapter.notifyItemUpdated(selectedIndex, note)
+                            noteListViewModel.notifyItemUpdated(note)
+                            noteListAdapter?.notifyItemUpdated(selectedIndex, note)
+                        }, { /*error*/ })
+                )
 
                 clearFocus()
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
@@ -142,11 +206,19 @@ class NoteListFragment : Fragment() {
 
         binding.buttonDelete.setOnClickListener {
             if (selectedIndex >= 0) {
-                val id = noteListViewModel.getEffectSelectedViewStates()[selectedIndex].getID()
-                noteListViewModel.getEffectSelectedViewStates().removeAt(selectedIndex)
-                noteListViewModel.removeEffectSelectedViewState(id)
+                isItemClicked = false
 
-                noteListAdapter.deleteEffectsDetail(selectedIndex)
+                compositeDisposable.add(
+                    noteListViewModel.getNoteItemSelectedViewStates()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            val id = it[selectedIndex].getID()
+                            noteListViewModel.removeEffectSelectedViewState(id)
+                        }, { /*error*/ })
+                )
+
+                noteListAdapter?.deleteEffectsDetail(selectedIndex)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
                     isAddClicked = false,
                     isItemClicked = false,
@@ -155,11 +227,12 @@ class NoteListFragment : Fragment() {
             }
         }
 
-        noteListAdapter.setItemClickListener(object : NoteListAdapter.OnItemClickListener {
+        noteListAdapter?.setItemClickListener(object : NoteListAdapter.OnItemClickListener {
             override fun onItemClicked(selectedPosition: Int) {
                 if (selectedPosition == -1) {
                     return
                 }
+                isItemClicked = true
                 selectedIndex = selectedPosition
                 fillTextViews(selectedPosition)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
@@ -167,9 +240,6 @@ class NoteListFragment : Fragment() {
                     isItemClicked = true,
                     isEdited = false
                 )
-
-                //noteListViewModel.getEffectSelectedViewStates()
-                // noteListAdapter.notifyDataSetChanged()
             }
         })
     }
@@ -179,7 +249,14 @@ class NoteListFragment : Fragment() {
             binding.noteFragmentViewState = it
             binding.executePendingBindings()
         }
-        noteListAdapter.setEffectsDetailList(getEffectSelectedViewStates())
+        compositeDisposable.add(
+            noteListViewModel.getNoteItemSelectedViewStates()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    noteListAdapter?.setEffectsDetailList(it)
+                }, { /*error*/ })
+        )
     }
 
     private fun isValid(): Boolean {
@@ -202,14 +279,22 @@ class NoteListFragment : Fragment() {
     }
 
     private fun fillTextViews(index: Int) {
-        val note = noteListViewModel.getEffectSelectedViewStates()[index]
-        binding.editTextTitle.setText(note.getTitle())
-        binding.editTextDesc.setText(note.getDesc())
-        binding.editTextUrl.setText(note.getImageURL())
+        compositeDisposable.add(
+            noteListViewModel.getNoteItemSelectedViewStates()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    val note = it[index]
 
-        binding.textViewTitle.text = note.getTitle()
-        binding.textViewDesc.text = note.getDesc()
-        binding.textViewUrl.text = note.getImageURL()
+                    binding.editTextTitle.setText(note.getTitle())
+                    binding.editTextDesc.setText(note.getDesc())
+                    binding.editTextUrl.setText(note.getImageURL())
+
+                    binding.textViewTitle.text = note.getTitle()
+                    binding.textViewDesc.text = note.getDesc()
+                    binding.textViewUrl.text = note.getImageURL()
+                }, { /*error*/ })
+        )
     }
 
     private fun clearTextViews() {
@@ -222,6 +307,32 @@ class NoteListFragment : Fragment() {
         val imm =
             context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun editBackPressedHelper() {
+        binding.inputLayoutTitle.isErrorEnabled = false
+        binding.inputLayoutDesc.isErrorEnabled = false
+
+        clearFocus()
+        clearTextViews()
+        noteListViewModel.notifyNoteScreenViewStateLiveData(
+            isAddClicked = false,
+            isItemClicked = true,
+            isEdited = false
+        )
+    }
+
+    private fun addBackPressedHelper() {
+        binding.inputLayoutTitle.isErrorEnabled = false
+        binding.inputLayoutDesc.isErrorEnabled = false
+
+        clearFocus()
+        clearTextViews()
+        noteListViewModel.notifyNoteScreenViewStateLiveData(
+            isAddClicked = false,
+            isItemClicked = false,
+            isEdited = false
+        )
     }
 
     companion object {

@@ -1,12 +1,16 @@
 package com.yilmazvolkan.simplenoteapp.viewModels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.yilmazvolkan.simplenoteapp.database.NotesDBHelper
 import com.yilmazvolkan.simplenoteapp.view.NoteFragmentViewState
 import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class NoteListViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -16,20 +20,17 @@ class NoteListViewModel(app: Application) : AndroidViewModel(app) {
                 NoteFragmentViewState(isAddClicked = false, isItemClicked = false, isEdited = false)
         }
 
-    private val myNotesList = arrayListOf<NoteItemViewState>()
+
 
     private var notesDBHelper = NotesDBHelper(app)
 
-
-    fun getEffectSelectedViewStates(): ArrayList<NoteItemViewState> {
-        return notesDBHelper.readAllUsers()
-    }
+    fun getNoteItemSelectedViewStates() = notesDBHelper.readAllUsers()
 
     fun addEffectSelectedViewState(noteItemViewState: NoteItemViewState) {
         notesDBHelper.insertNote(noteItemViewState)
     }
 
-    fun notifyItemUpdated(viewState: NoteItemViewState){
+    fun notifyItemUpdated(viewState: NoteItemViewState) {
         notesDBHelper.updateNote(viewState)
     }
 
@@ -51,5 +52,4 @@ class NoteListViewModel(app: Application) : AndroidViewModel(app) {
             isEdited = isEdited
         )
     }
-
 }

@@ -2,6 +2,7 @@ package com.yilmazvolkan.simplenoteapp.view
 
 import android.view.View
 
+
 data class NoteItemViewState(
     private var id: String = "",
     private var title: String = "",

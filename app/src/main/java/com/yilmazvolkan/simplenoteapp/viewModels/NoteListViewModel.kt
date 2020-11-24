@@ -36,8 +36,8 @@ class NoteListViewModel(app: Application) : AndroidViewModel(app) {
         myNotesList[index].setIsEdited(viewState.getIsEdited())
     }
 
-    fun removeEffectSelectedViewState(index: Int) {
-        myNotesList.removeAt(index)
+    fun removeEffectSelectedViewState(id: String) {
+        notesDBHelper.deleteNote(id)
     }
 
     fun getNoteScreenViewStateLiveData(): LiveData<NoteFragmentViewState> =

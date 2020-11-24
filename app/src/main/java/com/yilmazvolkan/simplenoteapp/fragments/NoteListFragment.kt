@@ -29,9 +29,6 @@ class NoteListFragment : Fragment() {
 
     private var selectedIndex = -1
 
-    private var saveButtonClicked: ((Int) -> Unit)? = null
-    private var openGalleryButtonClicked: (() -> Unit)? = null //todo look database insert and get list
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -145,8 +142,9 @@ class NoteListFragment : Fragment() {
 
         binding.buttonDelete.setOnClickListener {
             if (selectedIndex >= 0) {
+                val id = noteListViewModel.getEffectSelectedViewStates()[selectedIndex].getID()
                 noteListViewModel.getEffectSelectedViewStates().removeAt(selectedIndex)
-                noteListViewModel.removeEffectSelectedViewState(selectedIndex)
+                noteListViewModel.removeEffectSelectedViewState(id)
 
                 noteListAdapter.deleteEffectsDetail(selectedIndex)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(

@@ -26,9 +26,21 @@ data class NoteItemViewState(
         this.desc = desc
     }
 
+    fun getImageURL() = imageURL
+
+    fun setImageURL(imageURL: String) {
+        this.imageURL = imageURL
+    }
+
     fun getDate() = date
 
     fun setDate(date: String) {
         this.date = date
+    }
+
+    fun getIsEdited() = isEdited
+
+    fun setIsEdited(isEdited: Boolean) {
+        this.isEdited = isEdited
     }
 }

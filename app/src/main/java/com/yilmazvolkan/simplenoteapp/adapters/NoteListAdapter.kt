@@ -80,6 +80,7 @@ class NoteListAdapter(private val context: Context) : RecyclerView.Adapter<NoteL
 
         fun bind(noteItem: NoteItemViewState, context: Context) {
             if (noteItem.getImageURL().isNotEmpty()) {
+                binding.imageViewPhoto.visibility = VISIBLE
                 Glide.with(context)
                     .load(noteItem.getImageURL())
                     .listener(object : RequestListener<Drawable> {
@@ -88,7 +89,6 @@ class NoteListAdapter(private val context: Context) : RecyclerView.Adapter<NoteL
                             return false
                         }
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            binding.imageViewPhoto.visibility = VISIBLE
                             return false
                         }
                     })

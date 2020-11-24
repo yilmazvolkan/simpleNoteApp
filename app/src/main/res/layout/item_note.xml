@@ -14,19 +14,22 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:paddingStart="@dimen/dimen_8dp"
+        android:paddingStart="@dimen/dimen_24dp"
         android:paddingEnd="@dimen/dimen_8dp"
         android:paddingTop="@dimen/dimen_4dp"
-        android:paddingBottom="@dimen/dimen_4dp"
+        android:background="@color/light"
         android:layout_gravity="center">
 
         <TextView
             android:id="@+id/text_view_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dimen_4dp"
+            android:paddingTop="@dimen/dimen_4dp"
+            android:paddingStart="@dimen/dimen_4dp"
+            android:paddingEnd="@dimen/dimen_4dp"
             android:singleLine="true"
             android:textSize="@dimen/title_text_size"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:text="@{viewState.title}"/>
 
@@ -35,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/dimen_4dp"
-            android:textSize="@dimen/title_text_size"
+            android:textSize="@dimen/desc_text_size"
             android:textStyle="bold"
             android:maxLines="2"
             android:text="@{viewState.desc}"/>
@@ -49,25 +52,35 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:orientation="horizontal">
-            <TextView
-                android:id="@+id/text_view_created_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dimen_4dp"
-                android:textSize="@dimen/title_text_size"
-                android:textStyle="bold"
-                android:text="@{viewState.date}"/>
 
             <TextView
                 android:id="@+id/text_view_is_edited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dimen_4dp"
-                android:textSize="@dimen/title_text_size"
-                android:textStyle="bold"
+                android:paddingTop="@dimen/dimen_4dp"
+                android:paddingStart="@dimen/dimen_4dp"
+                android:paddingEnd="@dimen/dimen_1dp"
+                android:paddingBottom="@dimen/dimen_4dp"
+                android:textSize="@dimen/edited_text_size"
+                android:textStyle="italic"
                 android:text="@string/edited"
                 android:visibility="@{viewState.getIsEditedTextViewVisibility}"/>
+
+            <TextView
+                android:id="@+id/text_view_created_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_4dp"
+                android:textSize="@dimen/edited_text_size"
+                android:textStyle="normal"
+                android:text="@{viewState.date}"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_2dp"
+            android:background="@color/black"/>
     </LinearLayout>
 </layout>

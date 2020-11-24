@@ -15,6 +15,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
+        android:background="@color/primary"
         android:orientation="vertical">
 
         <LinearLayout
@@ -23,6 +24,7 @@
             android:layout_height="@dimen/toolbar_height"
             android:layout_alignParentTop="true"
             android:gravity="center"
+            android:background="@color/dark"
             android:padding="5dp">
 
             <ImageView
@@ -41,16 +43,26 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewEffects"
+        <androidx.cardview.widget.CardView
+            android:visibility="@{noteFragmentViewState.listStateVisibility}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
-            android:layout_marginTop="@dimen/dimen_12dp"
-            android:paddingBottom="@dimen/dimen_12dp"
-            android:visibility="@{noteFragmentViewState.listStateVisibility}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_note" />
+            android:background="@color/light"
+            android:layout_margin="@dimen/dimen_16dp"
+            app:cardCornerRadius="@dimen/dimen_8dp"
+            app:cardElevation="@dimen/dimen_4dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewEffects"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/light"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_note" />
+
+        </androidx.cardview.widget.CardView>
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_note"

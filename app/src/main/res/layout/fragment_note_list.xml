@@ -25,6 +25,9 @@
             android:layout_alignParentTop="true"
             android:gravity="center"
             android:background="@color/dark"
+            android:weightSum="10"
+            android:paddingStart="@dimen/dimen_8dp"
+            android:paddingEnd="@dimen/dimen_16dp"
             android:padding="5dp">
 
             <ImageView
@@ -39,7 +42,23 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="9" />
+                android:layout_weight="8" />
+
+            <View
+                android:layout_width="0dp"
+                android:visibility="@{noteFragmentViewState.listNotStateVisibility}"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/image_view_add_note"
+                android:visibility="@{noteFragmentViewState.listStateVisibility}"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen_30dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_history_edu_black_24dp"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
@@ -58,26 +77,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/light"
+                android:paddingBottom="@dimen/dimen_4dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_note" />
 
         </androidx.cardview.widget.CardView>
-
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_note"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/dimen_18dp"
-            android:layout_marginBottom="@dimen/dimen_18dp"
-            android:src="@drawable/ic_add_24px"
-            android:visibility="@{noteFragmentViewState.listStateVisibility}"
-            app:elevation="6dp"
-            app:fabSize="mini"
-            app:pressedTranslationZ="12dp"
-            tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:layout_width="match_parent"

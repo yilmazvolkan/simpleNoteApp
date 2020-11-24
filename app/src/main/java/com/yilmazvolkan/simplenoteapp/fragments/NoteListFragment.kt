@@ -70,7 +70,7 @@ class NoteListFragment : Fragment() {
             )
         }
 
-        binding.fabAddNote.setOnClickListener {
+        binding.imageViewAddNote.setOnClickListener {
             clearTextViews()
             noteListViewModel.notifyNoteScreenViewStateLiveData(
                 isAddClicked = true,

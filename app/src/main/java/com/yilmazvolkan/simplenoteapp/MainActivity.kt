@@ -36,5 +36,9 @@ class MainActivity : AppCompatActivity() {
                     .commitAllowingStateLoss()
             }
         }
+
+        recordFragment?.setOnBackButtonClicked {
+            finishAffinity()
+        }
     }
 }

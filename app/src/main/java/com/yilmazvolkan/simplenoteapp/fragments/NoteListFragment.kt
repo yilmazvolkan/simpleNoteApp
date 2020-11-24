@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -29,6 +30,15 @@ class NoteListFragment : Fragment() {
     private val noteListAdapter = NoteListAdapter()
 
     private var selectedIndex = -1
+
+    private var onBackButtonClicked: (() -> Unit)? = null
+
+    private var isItemClicked = false
+    private var isEditClicked = false
+
+    fun setOnBackButtonClicked(onBackButtonClicked: (() -> Unit)?) {
+        this.onBackButtonClicked = onBackButtonClicked
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +66,30 @@ class NoteListFragment : Fragment() {
         initializeViewModel()
         initializeViewListeners()
         observeNoteListViewModel()
+
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+            true // default to enabled
+        ) {
+            override fun handleOnBackPressed() {
+                when {
+                    isEditClicked -> {
+                        isEditClicked = false
+                        editBackPressedHelper()
+                    }
+                    isItemClicked -> {
+                        isItemClicked = false
+                        addBackPressedHelper()
+                    }
+                    else -> {
+                        onBackButtonClicked?.invoke()
+                    }
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner, // LifecycleOwner
+            callback
+        )
     }
 
     private fun initializeViewModel() {
@@ -69,17 +103,19 @@ class NoteListFragment : Fragment() {
 
     private fun initializeViewListeners() {
         binding.imageViewBack.setOnClickListener {
-            //TODO
-            binding.inputLayoutTitle.isErrorEnabled = false
-            binding.inputLayoutDesc.isErrorEnabled = false
-
-            clearFocus()
-            clearTextViews()
-            noteListViewModel.notifyNoteScreenViewStateLiveData(
-                isAddClicked = false,
-                isItemClicked = false,
-                isEdited = false
-            )
+            when {
+                isEditClicked -> {
+                    isEditClicked = false
+                    editBackPressedHelper()
+                }
+                isItemClicked -> {
+                    isItemClicked = false
+                    addBackPressedHelper()
+                }
+                else -> {
+                    onBackButtonClicked?.invoke()
+                }
+            }
         }
 
         binding.imageViewAddNote.setOnClickListener {
@@ -121,6 +157,7 @@ class NoteListFragment : Fragment() {
         }
         binding.buttonEdit.setOnClickListener {
             if (selectedIndex >= 0) {
+                isEditClicked = true
                 fillTextViews(selectedIndex)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
                     isAddClicked = false,
@@ -132,7 +169,7 @@ class NoteListFragment : Fragment() {
 
         binding.buttonSave.setOnClickListener {
             if (isValid()) {
-
+                isEditClicked = false
                 val note = noteListViewModel.getEffectSelectedViewStates()[selectedIndex]
 
                 note.setTitle(binding.editTextTitle.text.toString())
@@ -154,6 +191,8 @@ class NoteListFragment : Fragment() {
 
         binding.buttonDelete.setOnClickListener {
             if (selectedIndex >= 0) {
+                isItemClicked = false
+
                 val id = noteListViewModel.getEffectSelectedViewStates()[selectedIndex].getID()
                 noteListViewModel.getEffectSelectedViewStates().removeAt(selectedIndex)
                 noteListViewModel.removeEffectSelectedViewState(id)
@@ -172,6 +211,7 @@ class NoteListFragment : Fragment() {
                 if (selectedPosition == -1) {
                     return
                 }
+                isItemClicked = true
                 selectedIndex = selectedPosition
                 fillTextViews(selectedPosition)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
@@ -179,9 +219,6 @@ class NoteListFragment : Fragment() {
                     isItemClicked = true,
                     isEdited = false
                 )
-
-                //noteListViewModel.getEffectSelectedViewStates()
-                // noteListAdapter.notifyDataSetChanged()
             }
         })
     }
@@ -234,6 +271,32 @@ class NoteListFragment : Fragment() {
         val imm =
             context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun editBackPressedHelper() {
+        binding.inputLayoutTitle.isErrorEnabled = false
+        binding.inputLayoutDesc.isErrorEnabled = false
+
+        clearFocus()
+        clearTextViews()
+        noteListViewModel.notifyNoteScreenViewStateLiveData(
+            isAddClicked = false,
+            isItemClicked = true,
+            isEdited = false
+        )
+    }
+
+    private fun addBackPressedHelper() {
+        binding.inputLayoutTitle.isErrorEnabled = false
+        binding.inputLayoutDesc.isErrorEnabled = false
+
+        clearFocus()
+        clearTextViews()
+        noteListViewModel.notifyNoteScreenViewStateLiveData(
+            isAddClicked = false,
+            isItemClicked = false,
+            isEdited = false
+        )
     }
 
     companion object {

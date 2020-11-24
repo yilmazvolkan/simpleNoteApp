@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Simple Note App</string>
+
+    <string name="edited">Edited</string>
+    <string name="add">Add</string>
+
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="image_url">Image Url</string>
+
 </resources>

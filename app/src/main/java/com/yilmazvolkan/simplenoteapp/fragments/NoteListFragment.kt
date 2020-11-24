@@ -18,6 +18,9 @@ import com.yilmazvolkan.simplenoteapp.util.NoteListViewModelFactory
 import com.yilmazvolkan.simplenoteapp.util.inflate
 import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
 import com.yilmazvolkan.simplenoteapp.viewModels.NoteListViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 
 
@@ -35,6 +38,8 @@ class NoteListFragment : Fragment() {
 
     private var isItemClicked = false
     private var isEditClicked = false
+
+    private var compositeDisposable = CompositeDisposable()
 
     fun setOnBackButtonClicked(onBackButtonClicked: (() -> Unit)?) {
         this.onBackButtonClicked = onBackButtonClicked
@@ -170,15 +175,23 @@ class NoteListFragment : Fragment() {
         binding.buttonSave.setOnClickListener {
             if (isValid()) {
                 isEditClicked = false
-                val note = noteListViewModel.getEffectSelectedViewStates()[selectedIndex]
 
-                note.setTitle(binding.editTextTitle.text.toString())
-                note.setDesc(binding.editTextDesc.text.toString())
-                note.setImageURL(binding.editTextUrl.text.toString())
-                note.setIsEdited(true)
+                compositeDisposable.add(
+                    noteListViewModel.getNoteItemSelectedViewStates()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            val note = it[selectedIndex]
 
-                noteListViewModel.notifyItemUpdated(note)
-                noteListAdapter.notifyItemUpdated(selectedIndex, note)
+                            note.setTitle(binding.editTextTitle.text.toString())
+                            note.setDesc(binding.editTextDesc.text.toString())
+                            note.setImageURL(binding.editTextUrl.text.toString())
+                            note.setIsEdited(true)
+
+                            noteListViewModel.notifyItemUpdated(note)
+                            noteListAdapter.notifyItemUpdated(selectedIndex, note)
+                        }, { /*error*/ })
+                )
 
                 clearFocus()
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
@@ -193,9 +206,15 @@ class NoteListFragment : Fragment() {
             if (selectedIndex >= 0) {
                 isItemClicked = false
 
-                val id = noteListViewModel.getEffectSelectedViewStates()[selectedIndex].getID()
-                noteListViewModel.getEffectSelectedViewStates().removeAt(selectedIndex)
-                noteListViewModel.removeEffectSelectedViewState(id)
+                compositeDisposable.add(
+                    noteListViewModel.getNoteItemSelectedViewStates()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            val id = it[selectedIndex].getID()
+                            noteListViewModel.removeEffectSelectedViewState(id)
+                        }, { /*error*/ })
+                )
 
                 noteListAdapter.deleteEffectsDetail(selectedIndex)
                 noteListViewModel.notifyNoteScreenViewStateLiveData(
@@ -228,7 +247,14 @@ class NoteListFragment : Fragment() {
             binding.noteFragmentViewState = it
             binding.executePendingBindings()
         }
-        noteListAdapter.setEffectsDetailList(getEffectSelectedViewStates())
+        compositeDisposable.add(
+            noteListViewModel.getNoteItemSelectedViewStates()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    noteListAdapter.setEffectsDetailList(it)
+                }, { /*error*/ })
+        )
     }
 
     private fun isValid(): Boolean {
@@ -251,14 +277,22 @@ class NoteListFragment : Fragment() {
     }
 
     private fun fillTextViews(index: Int) {
-        val note = noteListViewModel.getEffectSelectedViewStates()[index]
-        binding.editTextTitle.setText(note.getTitle())
-        binding.editTextDesc.setText(note.getDesc())
-        binding.editTextUrl.setText(note.getImageURL())
+        compositeDisposable.add(
+            noteListViewModel.getNoteItemSelectedViewStates()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    val note = it[index]
 
-        binding.textViewTitle.text = note.getTitle()
-        binding.textViewDesc.text = note.getDesc()
-        binding.textViewUrl.text = note.getImageURL()
+                    binding.editTextTitle.setText(note.getTitle())
+                    binding.editTextDesc.setText(note.getDesc())
+                    binding.editTextUrl.setText(note.getImageURL())
+
+                    binding.textViewTitle.text = note.getTitle()
+                    binding.textViewDesc.text = note.getDesc()
+                    binding.textViewUrl.text = note.getImageURL()
+                }, { /*error*/ })
+        )
     }
 
     private fun clearTextViews() {

@@ -2,11 +2,11 @@ package com.yilmazvolkan.simplenoteapp.database
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
+import io.reactivex.rxjava3.core.Observable
 
 
 class NotesDBHelper(context: Context) :
@@ -75,37 +75,39 @@ class NotesDBHelper(context: Context) :
         return true
     }
 
+    fun readAllUsers(): Observable<ArrayList<NoteItemViewState>> {
+        return Observable.create { emitter ->
+            val notes = ArrayList<NoteItemViewState>()
+            val db = writableDatabase
+            try {
+                val cursor = db.rawQuery("select * from " + DBContract.NoteEntry.TABLE_NAME, null)
+                if (cursor != null && cursor.moveToFirst()) {
+                    while (cursor.isAfterLast.not()) {
+                        val id =
+                            cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_NOTE_ID))
+                        val title =
+                            cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_TITLE))
+                        val desc =
+                            cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_DESC))
+                        val url =
+                            cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_URL))
+                        val date =
+                            cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_CREATED_DATE))
+                        val isEdited =
+                            cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_IS_EDITED))
 
-    fun readAllUsers(): ArrayList<NoteItemViewState> {
-        val notes = ArrayList<NoteItemViewState>()
-        val db = writableDatabase
-        val cursor: Cursor?
-        try {
-            cursor = db.rawQuery("select * from " + DBContract.NoteEntry.TABLE_NAME, null)
-        } catch (e: SQLiteException) {
-            db.execSQL(SQL_CREATE_ENTRIES)
-            return ArrayList()
-        }
-
-        if (cursor != null && cursor.moveToFirst()) {
-            while (cursor.isAfterLast.not()) {
-                val id =
-                    cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_NOTE_ID))
-                val title =
-                    cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_TITLE))
-                val desc = cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_DESC))
-                val url = cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_URL))
-                val date =
-                    cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_CREATED_DATE))
-                val isEdited =
-                    cursor.getString(cursor.getColumnIndex(DBContract.NoteEntry.COLUMN_IS_EDITED))
-
-                notes.add(NoteItemViewState(id, title, desc, url, date, (isEdited == "1")))
-                cursor.moveToNext()
+                        notes.add(NoteItemViewState(id, title, desc, url, date, (isEdited == "1")))
+                        cursor.moveToNext()
+                    }
+                }
+                cursor.close()
+            } catch (e: SQLiteException) {
+                db.execSQL(SQL_CREATE_ENTRIES)
+                emitter.onError(e)
             }
+            emitter.onNext(notes)
+            emitter.onComplete()
         }
-        cursor.close()
-        return notes
     }
 
     companion object {

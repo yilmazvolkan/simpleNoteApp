@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
 
+
 class NotesDBHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
@@ -24,6 +25,25 @@ class NotesDBHelper(context: Context) :
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onUpgrade(db, oldVersion, newVersion)
+    }
+
+    fun updateNote(note: NoteItemViewState): Boolean {
+        val db = writableDatabase
+        val values = ContentValues()
+        val selection = DBContract.NoteEntry.COLUMN_NOTE_ID + " LIKE ?"
+        val selectionArgs = arrayOf(note.getID())
+
+        values.put(DBContract.NoteEntry.COLUMN_TITLE, note.getTitle())
+        values.put(DBContract.NoteEntry.COLUMN_DESC, note.getDesc())
+        values.put(DBContract.NoteEntry.COLUMN_URL, note.getImageURL())
+        values.put(DBContract.NoteEntry.COLUMN_IS_EDITED, "1")
+        db.update(
+            DBContract.NoteEntry.TABLE_NAME,
+            values,
+            selection,
+            selectionArgs
+        )
+        return true
     }
 
     @Throws(SQLiteConstraintException::class)

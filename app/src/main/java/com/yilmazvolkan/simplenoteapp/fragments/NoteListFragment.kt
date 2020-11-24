@@ -96,7 +96,7 @@ class NoteListFragment : Fragment() {
                     isEdited = false
                 )
 
-                noteListViewModel.addEffectSelectedViewState(noteItemViewState) //todo save to locale
+                noteListViewModel.addEffectSelectedViewState(noteItemViewState)
                 noteListAdapter.addEffectsDetail(noteItemViewState)
 
                 clearFocus()
@@ -128,7 +128,7 @@ class NoteListFragment : Fragment() {
                 note.setImageURL(binding.editTextUrl.text.toString())
                 note.setIsEdited(true)
 
-                noteListViewModel.notifyItemUpdated(selectedIndex, note)
+                noteListViewModel.notifyItemUpdated(note)
                 noteListAdapter.notifyItemUpdated(selectedIndex, note)
 
                 clearFocus()

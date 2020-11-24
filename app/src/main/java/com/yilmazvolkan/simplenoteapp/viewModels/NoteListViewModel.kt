@@ -29,11 +29,8 @@ class NoteListViewModel(app: Application) : AndroidViewModel(app) {
         notesDBHelper.insertNote(noteItemViewState)
     }
 
-    fun notifyItemUpdated(index: Int, viewState: NoteItemViewState){
-        myNotesList[index].setTitle(viewState.getTitle())
-        myNotesList[index].setDesc(viewState.getDesc())
-        myNotesList[index].setImageURL(viewState.getImageURL())
-        myNotesList[index].setIsEdited(viewState.getIsEdited())
+    fun notifyItemUpdated(viewState: NoteItemViewState){
+        notesDBHelper.updateNote(viewState)
     }
 
     fun removeEffectSelectedViewState(id: String) {

@@ -2,6 +2,7 @@ package com.yilmazvolkan.simplenoteapp.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,11 @@ class NoteListFragment : Fragment() {
 
         binding.recyclerViewEffects.adapter = noteListAdapter
 
+        binding.textViewTitle.movementMethod = ScrollingMovementMethod()
+        binding.textViewDesc.movementMethod = ScrollingMovementMethod()
+        binding.textViewUrl.movementMethod = ScrollingMovementMethod()
+        binding.editTextDesc.movementMethod = ScrollingMovementMethod()
+
         initializeViewModel()
         initializeViewListeners()
         observeNoteListViewModel()
@@ -63,6 +69,12 @@ class NoteListFragment : Fragment() {
 
     private fun initializeViewListeners() {
         binding.imageViewBack.setOnClickListener {
+            //TODO
+            binding.inputLayoutTitle.isErrorEnabled = false
+            binding.inputLayoutDesc.isErrorEnabled = false
+
+            clearFocus()
+            clearTextViews()
             noteListViewModel.notifyNoteScreenViewStateLiveData(
                 isAddClicked = false,
                 isItemClicked = false,

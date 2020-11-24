@@ -1,18 +1,22 @@
 package com.yilmazvolkan.simplenoteapp.adapters
 
 import android.content.Context
-import android.util.Log
-import android.util.Patterns
+import android.graphics.drawable.Drawable
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.yilmazvolkan.simplenoteapp.R
 import com.yilmazvolkan.simplenoteapp.databinding.ItemNoteBinding
 import com.yilmazvolkan.simplenoteapp.util.inflate
 import com.yilmazvolkan.simplenoteapp.view.NoteItemViewState
+import com.bumptech.glide.request.target.Target
 
-
-class NoteListAdapter(val context: Context) : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemViewHolder>() {
+class NoteListAdapter(private val context: Context) : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemViewHolder>() {
 
     interface OnItemClickListener {
         fun onItemClicked(selectedPosition: Int)
@@ -78,6 +82,16 @@ class NoteListAdapter(val context: Context) : RecyclerView.Adapter<NoteListAdapt
             if (noteItem.getImageURL().isNotEmpty()) {
                 Glide.with(context)
                     .load(noteItem.getImageURL())
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            binding.imageViewPhoto.visibility = GONE
+                            return false
+                        }
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            binding.imageViewPhoto.visibility = VISIBLE
+                            return false
+                        }
+                    })
                     .into(binding.imageViewPhoto)
             }
 

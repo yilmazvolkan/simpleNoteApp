@@ -14,7 +14,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var recordFragment: NoteListFragment? = null
-    private lateinit var notesDBHelper : NotesDBHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +36,5 @@ class MainActivity : AppCompatActivity() {
                     .commitAllowingStateLoss()
             }
         }
-
-        notesDBHelper = NotesDBHelper(this)
     }
 }

@@ -30,13 +30,13 @@ class NoteListFragment : Fragment() {
     private var selectedIndex = -1
 
     private var saveButtonClicked: ((Int) -> Unit)? = null
-    private var openGalleryButtonClicked: (() -> Unit)? = null
+    private var openGalleryButtonClicked: (() -> Unit)? = null //todo look database insert and get list
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return binding.root
     }
 

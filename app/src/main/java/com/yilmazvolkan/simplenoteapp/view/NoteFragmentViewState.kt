@@ -7,4 +7,6 @@ data class NoteFragmentViewState(
 ) {
 
     fun getListViewsVisibility() = if (isAddClicked) View.GONE else View.VISIBLE
+
+    fun getAddViewVisibility() =  if (isAddClicked) View.VISIBLE else View.GONE
 }

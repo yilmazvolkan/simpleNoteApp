@@ -20,7 +20,11 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NotesDetailItemView
     fun setEffectsDetailList(viewStateList: MutableList<NoteItemViewState>) {
         this.effectsDetailList.clear()
         this.effectsDetailList.addAll(viewStateList)
-        Log.d("VOLKAN", this.effectsDetailList.size.toString())
+        notifyDataSetChanged()
+    }
+
+    fun addEffectsDetail(viewState: NoteItemViewState) {
+        this.effectsDetailList.add(viewState)
         notifyDataSetChanged()
     }
 

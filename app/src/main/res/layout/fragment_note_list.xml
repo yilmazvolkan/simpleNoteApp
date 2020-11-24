@@ -43,17 +43,18 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewEffects"
+            android:visibility="@{noteFragmentViewState.listViewsVisibility}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
             android:layout_marginTop="@dimen/dimen_12dp"
             android:paddingBottom="@dimen/dimen_12dp"
-            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_note" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_note"
+            android:visibility="@{noteFragmentViewState.listViewsVisibility}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -61,18 +62,19 @@
             android:layout_marginEnd="@dimen/dimen_18dp"
             android:layout_marginBottom="@dimen/dimen_18dp"
             android:src="@drawable/ic_add_24px"
-            android:visibility="gone"
             app:elevation="6dp"
             app:fabSize="mini"
             app:pressedTranslationZ="12dp"
             tools:ignore="ContentDescription" />
 
         <LinearLayout
+            android:visibility="@{noteFragmentViewState.addViewVisibility}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/toolbar"
             android:layout_margin="@dimen/dimen_4dp"
             android:gravity="center_horizontal"
+            android:focusableInTouchMode="true"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout

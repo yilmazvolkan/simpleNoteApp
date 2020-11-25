@@ -17,9 +17,8 @@ We determined some functional requirements for the project.
 <p float="left">
   <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/added_some_notes.jpg" width="150">
   <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/note_changed.jpg" width="150">
-  <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/updated_list.jpg" width="150">
   <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/wrong_list.jpg" width="150">
-  <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/after_delete.jpg" width="150">
+  <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/updated_list.jpg" width="150">
   <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/update_with_image.jpg" width="150">
-    <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/after_image.jpg" width="150">
+  <img src="https://github.com/yilmazvolkan/simpleNoteApp/blob/main/screeenshots/after_image.jpg" width="150">
 </p>

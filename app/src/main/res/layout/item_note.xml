@@ -43,10 +43,20 @@
             android:maxLines="2"
             android:text="@{viewState.desc}"/>
 
-        <ImageView
-            android:id="@+id/image_view_photo"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_54dp"/>
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/light"
+            android:layout_marginStart="@dimen/dimen_4dp"
+            app:cardCornerRadius="@dimen/dimen_2dp"
+            app:cardElevation="@dimen/dimen_2dp">
+
+            <ImageView
+                android:id="@+id/image_view_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_54dp" />
+
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:layout_width="wrap_content"

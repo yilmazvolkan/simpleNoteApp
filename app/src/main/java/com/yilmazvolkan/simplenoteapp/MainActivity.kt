@@ -18,7 +18,7 @@ import com.yilmazvolkan.simplenoteapp.util.permissions.PermissionResult
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private var recordFragment: NoteListFragment? = null
+    private var noteFragment: NoteListFragment? = null
     private val permissionsHelper by lazy { PermissionHelper(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             startFragment()
         }
 
-        recordFragment?.setOnBackButtonClicked {
+        noteFragment?.setOnBackButtonClicked {
             finishAffinity()
         }
     }
@@ -64,11 +64,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startFragmentHelper() {
-        recordFragment = NoteListFragment.newInstance()
-        if (recordFragment != null && this.isFinishing.not()) {
+        noteFragment = NoteListFragment.newInstance()
+        if (noteFragment != null && this.isFinishing.not()) {
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fragment_container, recordFragment!!)
+                .add(R.id.fragment_container, noteFragment!!)
                 .addToBackStack(null)
                 .commitAllowingStateLoss()
         }
@@ -95,6 +95,11 @@ class MainActivity : AppCompatActivity() {
         )
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        noteFragment?.clearData()
+        super.onDestroy()
     }
 
     companion object {

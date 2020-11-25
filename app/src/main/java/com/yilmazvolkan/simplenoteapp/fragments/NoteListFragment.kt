@@ -45,6 +45,11 @@ class NoteListFragment : Fragment() {
         this.onBackButtonClicked = onBackButtonClicked
     }
 
+    fun clearData() {
+        if (compositeDisposable.isDisposed.not())
+        compositeDisposable.dispose()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
